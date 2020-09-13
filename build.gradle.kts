@@ -22,5 +22,6 @@ allprojects {
         kotlinOptions.verbose=true
         kotlinOptions.javaParameters=true
         kotlinOptions.useIR=true
+        kotlinOptions.freeCompilerArgs = listOf("-Xjsr305=strict")
     }
 }

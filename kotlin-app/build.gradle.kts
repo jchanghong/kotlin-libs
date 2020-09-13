@@ -42,6 +42,8 @@ dependencies {
     // Use the Kotlin JUnit integration.
 //    testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
     implementation(project(":kotlin-lib"))
+//        implementation("com.github.jchanghong:kotlin-lib:1.0")
+
 }
 
 application {

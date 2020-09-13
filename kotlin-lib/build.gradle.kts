@@ -7,14 +7,79 @@
 plugins {
     kotlin("jvm")
     id("org.jetbrains.dokka")
+
     // Apply the Kotlin JVM plugin to add support for Kotlin.
 //    id("org.jetbrains.kotlin.jvm") version "1.3.72"
 
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
+    signing
+    `maven-publish`
 }
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["java"])
+            groupId="com.github.jchanghong"
+            version="1.0"
+            artifactId="kotlin-lib"
+//            versionMapping {
+//                this.allVariants {
+//                    fromResolutionResult()
+//                }
+//				usage("jvm-api") {
+//					fromResolutionOf("runtimeClasspath")
+//				}
+//				usage("jvm-runtime") {
+//					fromResolutionResult()
+//				}
+//            }
+            pom {
+                name.set("kotlin-lib")
+                description.set("kotlin lib tools")
+                url.set("http://www.example.com/library")
+                licenses {
+                    license {
+                        name.set("The Apache License, Version 2.0")
+                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                    }
+                }
+                developers {
+                    developer {
+                        email.set("3200601e@qq.com")
+                    }
+                }
+                scm {
+                    connection.set("scm:git:https://github.com/jchanghong/utils.git")
+                    developerConnection.set("scm:git:git@github.com:jchanghong/utils.git")
+                    url.set("git@github.com:jchanghong/utils.git")
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            name="sona"
+            // change URLs to point to your repos, e.g. http://my.org/repo
+//			val releasesRepoUrl = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2")
+            val snapshotsRepoUrl = uri("$buildDir/repos/snapshots")
+            val releasesRepoUrl = uri("$buildDir/repos/releases")
 
+            url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
+            if (url.toString().startsWith("http")) {
+                this.isAllowInsecureProtocol=true
+                this.credentials {
+                    this.username="jchanghong"
+                    this.password="!b58r5gsHu*0"
+                }
+            }
+        }
+    }
+}
+signing {
 
+    sign(publishing.publications["maven"])
+}
 dependencies {
     // Align versions of all Kotlin components
 //    implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
@@ -40,5 +105,14 @@ kotlin{
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.3.9")
             }
         }
+    }
+}
+java{
+    withJavadocJar()
+    withSourcesJar()
+}
+tasks.javadoc {
+    if (JavaVersion.current().isJava9Compatible) {
+        (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
     }
 }
