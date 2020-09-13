@@ -26,6 +26,9 @@ configurations.all {
         if (requested.group == "org.jetbrains.kotlin") {
             useVersion("1.4.10")
         }
+//        if (requested.group == "org.jetbrains.kotlin") {
+//            useVersion("4.9.0")
+//        }
     }
 }
 publishing {
@@ -33,7 +36,7 @@ publishing {
         create<MavenPublication>("maven") {
             from(components["java"])
             groupId="com.github.jchanghong"
-            version="1.0.1"
+            version="2.3.3.2"
             artifactId="kotlin-lib"
             pom {
                 name.set("kotlin-lib")
@@ -97,7 +100,7 @@ kotlin{
 
                 api("io.springfox:springfox-swagger2:2.9.2")
                 api("io.springfox:springfox-swagger-ui:2.9.2")
-                api("com.squareup.okhttp3:okhttp:4.8.1")
+                api("com.squareup.okhttp3:okhttp:4.9.0")
                 api("com.baomidou:mybatis-plus-boot-starter:3.4.0")
                 api("com.github.liaochong:myexcel:3.9.4")
                 api("cn.hutool:hutool-all:5.4.1")

@@ -19,5 +19,5 @@ fun main() {
     }
     """.trimIndent()
 
-    println(JsonHelper.jsonToKotlin(json))
+    println(JsonHelper.jsonToKotlinClass(listOf(json)))
 }

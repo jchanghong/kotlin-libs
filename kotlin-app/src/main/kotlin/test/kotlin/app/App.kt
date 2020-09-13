@@ -4,6 +4,8 @@
 package test.kotlin.app
 
 import cn.hutool.core.util.RandomUtil
+import com.github.jchanghong.http.OkHttps
+import com.github.jchanghong.http.postJson
 import test.kotlin.lib.Library
 
 class App {
@@ -17,4 +19,10 @@ fun main(args: Array<String>) {
     println(Library().someLibraryMethod())
     println(RandomUtil.randomString(120))
     println(App().greeting)
+    val postJson = OkHttps.httpClient.postJson("http://127.0.0.1:9300/_sql?format=txt&pretty", """
+        {
+          "query": "SELECT * FROM test where name like 'abc%' LIMIT 5"
+        }
+    """.trimIndent())
+    println(postJson)
 }

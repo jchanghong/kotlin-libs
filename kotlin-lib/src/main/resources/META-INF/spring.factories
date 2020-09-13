@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-jchanghong.autoconfig.SqlAutoConfiguration
+com.github.jchanghong.autoconfig.SqlAutoConfiguration

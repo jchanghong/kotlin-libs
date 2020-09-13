@@ -3,6 +3,8 @@ package com.github.jchanghong.springboottest
 import cn.hutool.json.JSONObject
 import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
 import com.github.jchanghong.autoconfig.AutoConfig
+import com.github.jchanghong.http.OkHttps
+import com.github.jchanghong.http.postJson
 import com.github.jchanghong.springboottest.mapper1.auto.AutoMapperTbTest1
 import com.github.jchanghong.springboottest.mapper1.auto.DOTbTest1
 import org.springframework.beans.factory.annotation.Autowired

@@ -25,20 +25,9 @@ import java.util.*
 
 
 object JsonHelper {
-    fun jsonToKotlin(json: String): String {
-        val parseObj = JSONUtil.parseObj(json)
-        val joinToString = parseObj.entries.map { (k, v) ->
-            val type = when {
-                v::class == Int::class || v::class == Long::class -> "Long"
-                v::class == String::class -> "String"
-                else -> "String"
-            }
-            "var $k :$type ? =null"
-        }.joinToString(separator = ",\n")
-
-        return """
-       data class C1($joinToString) 
-    """.trimIndent()
+    /** json to kotlin class ，对个json保证正确性*/
+    fun jsonToKotlinClass(json: List<String>): String {
+       return Json2kotlinclass.jsonToKotlinClass(json)
     }
 
     val objectMapper = newJacksonMapper()

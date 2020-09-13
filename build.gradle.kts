@@ -22,11 +22,11 @@ allprojects {
         // You can declare any Maven/Ivy/file repository here.
     }
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java).configureEach {
-        kotlinOptions.suppressWarnings=false
+//        kotlinOptions.suppressWarnings=false
         kotlinOptions.jvmTarget="1.8"
-        kotlinOptions.verbose=true
-        kotlinOptions.javaParameters=true
-        kotlinOptions.useIR=true
+//        kotlinOptions.verbose=true
+//        kotlinOptions.javaParameters=true
+//        kotlinOptions.useIR=true
         kotlinOptions.freeCompilerArgs = listOf("-Xjsr305=strict")
     }
 }

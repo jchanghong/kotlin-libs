@@ -1,5 +1,6 @@
 package com.github.jchanghong.springboottest
 
+import com.github.jchanghong.elasticsearch.ElasticsearchHelper
 import com.github.jchanghong.http.OkHttps
 import com.github.jchanghong.http.postJson
 import com.github.jchanghong.random.RandomHelper
@@ -17,6 +18,8 @@ import org.springframework.data.elasticsearch.config.AbstractElasticsearchConfig
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.stereotype.Repository
 import org.springframework.stereotype.Service
+import java.util.concurrent.Executors
+import java.util.concurrent.atomic.AtomicLong
 
 
 @Document(indexName = "test", type = "doc", shards = 10, replicas = 0)
@@ -29,12 +32,14 @@ interface El : ElasticsearchRepository<Index1, Long?> {}
 @Service
 class Elastics(val el: El) : CommandLineRunner {
     override fun run(vararg args: String?) {
-        var a = 1L;
-        for (i in (1..10000)) {
-            val map = (1..10000).map { Index1(a++, RandomHelper.randomWordList()) }
+        val newFixedThreadPool = Executors.newFixedThreadPool(16)
+        var a = AtomicLong(30000000)
+        (1..10000).map { newFixedThreadPool.submit {
+            val map = (1..10000).map { Index1(a.incrementAndGet(), RandomHelper.randomWordList()) }
             el.saveAll(map)
-        }
-    }
+        }.get()
+        } }
+
 }
 
 @Configuration
@@ -52,10 +57,17 @@ class RestClientConfig : AbstractElasticsearchConfiguration() {
 }
 
 fun main() {
-    val postJson = OkHttps.httpClient.postJson("http://127.0.0.1:9300/_sql?format=txt&pretty", """
+    println(ElasticsearchHelper.query("name","this is abcd asa d"))
+    println(ElasticsearchHelper.index("test2", 1, """
         {
-          "query": "SELECT * FROM test where name like 'abc%' LIMIT 5"
-        }
-    """.trimIndent())
-    println(postJson)
+        "_class":"com.github.jchanghong.springboottest.Index1",
+        "id":6422599,
+        "name":"gwlqnbk owpwmgxiv xmn oewi loa zzx ahpgi nygbkdabt cdhacro hzouib ryk qfbs fjovklt axfnqiz rnx huawyk xuz wexcvqath teyunal qhhjxs fcmpvyn ffumdmx qzgptcnb azblkjhga eolwo pnmbvicqj vzwrwree fyrt yjzfy vnfvyjsja dvvdkml iwhon ksswjz paj tvazzczz"
+    }
+    """.trimIndent()))
+    println(ElasticsearchHelper.showTables())
+    println(ElasticsearchHelper.DESCRIBE("test"))
+    val sql = "select * from test where name like '%lkjhga%' limit 2"
+    println(ElasticsearchHelper.queryForTxt(sql))
+    println(ElasticsearchHelper.queryForJson(sql))
 }

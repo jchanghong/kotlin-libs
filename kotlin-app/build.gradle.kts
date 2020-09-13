@@ -30,17 +30,17 @@ kotlin{
 
 
 dependencies {
-    implementation(project(":kotlin-lib"))
 //        implementation("com.github.jchanghong:kotlin-lib:1.0.1")
         implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
     implementation("org.springframework.boot:spring-boot-starter-web")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
-
+    implementation(project(":kotlin-lib"))
+    api("com.squareup.okhttp3:okhttp:4.9.0")
 }
 
 application {
     // Define the main class for the application.
-    mainClassName = "kotlin.app.AppKt"
+    mainClassName = "test.kotlin.app.AppKt"
 }
