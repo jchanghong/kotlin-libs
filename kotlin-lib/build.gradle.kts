@@ -24,7 +24,7 @@ publishing {
         create<MavenPublication>("maven") {
             from(components["java"])
             groupId="com.github.jchanghong"
-            version="1.0"
+            version="1.0.1"
             artifactId="kotlin-lib"
 //            versionMapping {
 //                this.allVariants {
