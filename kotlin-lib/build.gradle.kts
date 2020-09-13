@@ -3,7 +3,8 @@
  *
  * This generated file contains a sample Kotlin library project to get you started.
  */
-
+import name.remal.gradle_plugins.plugins.publish.ossrh.RepositoryHandlerOssrhExtension
+import name.remal.gradle_plugins.dsl.extensions.*
 plugins {
     kotlin("jvm")
     id("org.jetbrains.dokka")
@@ -15,6 +16,8 @@ plugins {
     `java-library`
     signing
     `maven-publish`
+//    id("name.remal.maven-publish-ossrh") version "1.0.211"
+    id("name.remal.maven-publish-nexus-staging") version "1.0.211"
 }
 publishing {
     publications {
@@ -61,9 +64,9 @@ publishing {
         maven {
             name="sona"
             // change URLs to point to your repos, e.g. http://my.org/repo
-//			val releasesRepoUrl = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2")
+			val releasesRepoUrl = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2")
             val snapshotsRepoUrl = uri("$buildDir/repos/snapshots")
-            val releasesRepoUrl = uri("$buildDir/repos/releases")
+//            val releasesRepoUrl = uri("$buildDir/repos/releases")
 
             url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
             if (url.toString().startsWith("http")) {
@@ -115,4 +118,11 @@ tasks.javadoc {
     if (JavaVersion.current().isJava9Compatible) {
         (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
     }
+}
+//publishing.repositories.convention[RepositoryHandlerOssrhExtension::class.java].ossrh {
+//    credentials.username = "jchanghong" // Optional. By default 'OSSRH_USER' or 'OSS_USER' environment variables are used
+//    credentials.password = "!b58r5gsHu*0" // Optional. By default 'OSSRH_PASSWORD' or 'OSS_PASSWORD_USER' environment variables are used
+//}
+tasks.named("releaseNexusRepositories"){
+    this.dependsOn("publish")
 }
