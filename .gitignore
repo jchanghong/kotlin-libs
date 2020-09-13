@@ -15,6 +15,7 @@ target/
 
 ### IntelliJ IDEA ###
 .idea
+.gradle
 *.iws
 *.iml
 *.ipr
@@ -26,6 +27,7 @@ target/
 /nbdist/
 /.nb-gradle/
 build/
+build
 !**/src/main/**/build/
 !**/src/test/**/build/
 

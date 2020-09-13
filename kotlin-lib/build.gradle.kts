@@ -3,22 +3,15 @@
  *
  * This generated file contains a sample Kotlin library project to get you started.
  */
-import name.remal.gradle_plugins.plugins.publish.ossrh.RepositoryHandlerOssrhExtension
 import name.remal.gradle_plugins.dsl.extensions.*
 plugins {
     kotlin("jvm")
     kotlin("plugin.jpa")
     kotlin("plugin.spring")
     id("org.jetbrains.dokka")
-
-    // Apply the Kotlin JVM plugin to add support for Kotlin.
-//    id("org.jetbrains.kotlin.jvm") version "1.3.72"
-
-    // Apply the java-library plugin for API and implementation separation.
     `java-library`
     signing
     `maven-publish`
-//    id("name.remal.maven-publish-ossrh") version "1.0.211"
     id("name.remal.maven-publish-nexus-staging") version "1.0.211"
 }
 publishing {
@@ -28,20 +21,9 @@ publishing {
             groupId="com.github.jchanghong"
             version="1.0.1"
             artifactId="kotlin-lib"
-//            versionMapping {
-//                this.allVariants {
-//                    fromResolutionResult()
-//                }
-//				usage("jvm-api") {
-//					fromResolutionOf("runtimeClasspath")
-//				}
-//				usage("jvm-runtime") {
-//					fromResolutionResult()
-//				}
-//            }
             pom {
                 name.set("kotlin-lib")
-                description.set("kotlin lib tools")
+                description.set("kotlin java tools")
                 url.set("http://www.example.com/library")
                 licenses {
                     license {
@@ -65,7 +47,6 @@ publishing {
     repositories {
         maven {
             name="sona"
-            // change URLs to point to your repos, e.g. http://my.org/repo
 			val releasesRepoUrl = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2")
             val snapshotsRepoUrl = uri("$buildDir/repos/snapshots")
 //            val releasesRepoUrl = uri("$buildDir/repos/releases")
@@ -86,17 +67,7 @@ signing {
     sign(publishing.publications["maven"])
 }
 dependencies {
-    // Align versions of all Kotlin components
-//    implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
 
-    // Use the Kotlin JDK 8 standard library.
-//    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-
-    // Use the Kotlin test library.
-//    testImplementation("org.jetbrains.kotlin:kotlin-test")
-
-    // Use the Kotlin JUnit integration.
-//    testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
 }
 kotlin{
     sourceSets {
@@ -141,10 +112,6 @@ tasks.javadoc {
         (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
     }
 }
-//publishing.repositories.convention[RepositoryHandlerOssrhExtension::class.java].ossrh {
-//    credentials.username = "jchanghong" // Optional. By default 'OSSRH_USER' or 'OSS_USER' environment variables are used
-//    credentials.password = "!b58r5gsHu*0" // Optional. By default 'OSSRH_PASSWORD' or 'OSS_PASSWORD_USER' environment variables are used
-//}
 tasks.named("releaseNexusRepositories"){
     this.dependsOn("publish")
 }
