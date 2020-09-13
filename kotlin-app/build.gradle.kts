@@ -9,8 +9,8 @@ plugins {
     kotlin("plugin.jpa")
     kotlin("plugin.spring")
     application
-    id("org.springframework.boot") version "2.3.3.RELEASE"
-    id("io.spring.dependency-management") version "1.0.10.RELEASE"
+    id("org.springframework.boot")
+    id("io.spring.dependency-management")
 }
 kotlin{
     sourceSets {
@@ -32,8 +32,7 @@ kotlin{
 dependencies {
     implementation(project(":kotlin-lib"))
 //        implementation("com.github.jchanghong:kotlin-lib:1.0.1")
-        implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch:2.3.3.RELEASE")
-    testImplementation("org.springframework.boot:spring-boot-starter-test:2.3.3.RELEASE")
+        implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
     implementation("org.springframework.boot:spring-boot-starter-web")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")

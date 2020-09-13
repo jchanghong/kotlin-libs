@@ -5,6 +5,7 @@
  */
 import name.remal.gradle_plugins.dsl.extensions.*
 plugins {
+    id("org.springframework.boot")  apply false
     kotlin("jvm")
     kotlin("plugin.jpa")
     kotlin("plugin.spring")
@@ -13,6 +14,19 @@ plugins {
     signing
     `maven-publish`
     id("name.remal.maven-publish-nexus-staging") version "1.0.211"
+    id("io.spring.dependency-management")
+}
+dependencyManagement {
+    imports {
+        mavenBom(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
+    }
+}
+configurations.all {
+    resolutionStrategy.eachDependency {
+        if (requested.group == "org.jetbrains.kotlin") {
+            useVersion("1.4.10")
+        }
+    }
 }
 publishing {
     publications {
@@ -87,18 +101,18 @@ kotlin{
                 api("com.baomidou:mybatis-plus-boot-starter:3.4.0")
                 api("com.github.liaochong:myexcel:3.9.4")
                 api("cn.hutool:hutool-all:5.4.1")
-                api("com.oracle.ojdbc:ojdbc8:19.3.0.0")
-                api("com.oracle.ojdbc:orai18n:19.3.0.0")
-                api("mysql:mysql-connector-java:8.0.21")
-                api("org.mariadb.jdbc:mariadb-java-client:2.6.2")
-                api("org.postgresql:postgresql:42.2.14")
-                implementation("org.springframework.boot:spring-boot-starter-data-redis:2.3.3.RELEASE")
-                implementation("org.springframework.boot:spring-boot-starter-web:2.3.3.RELEASE")
-                api("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.2")
-                api("com.fasterxml.jackson.module:jackson-module-parameter-names:2.11.2")
-                api("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.2")
-                api("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.2")
-                implementation("org.springframework.kafka:spring-kafka:2.5.5.RELEASE")
+                api("com.oracle.ojdbc:ojdbc8")
+                api("com.oracle.ojdbc:orai18n")
+                api("mysql:mysql-connector-java")
+                api("org.mariadb.jdbc:mariadb-java-client")
+                api("org.postgresql:postgresql")
+                implementation("org.springframework.boot:spring-boot-starter-data-redis")
+                implementation("org.springframework.boot:spring-boot-starter-web")
+                api("com.fasterxml.jackson.module:jackson-module-kotlin")
+                api("com.fasterxml.jackson.module:jackson-module-parameter-names")
+                api("com.fasterxml.jackson.datatype:jackson-datatype-jdk8")
+                api("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+                implementation("org.springframework.kafka:spring-kafka")
             }
         }
     }
