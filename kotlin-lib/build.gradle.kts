@@ -7,6 +7,8 @@ import name.remal.gradle_plugins.plugins.publish.ossrh.RepositoryHandlerOssrhExt
 import name.remal.gradle_plugins.dsl.extensions.*
 plugins {
     kotlin("jvm")
+    kotlin("plugin.jpa")
+    kotlin("plugin.spring")
     id("org.jetbrains.dokka")
 
     // Apply the Kotlin JVM plugin to add support for Kotlin.
@@ -105,7 +107,27 @@ kotlin{
         }
         val main by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.3.9")
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.3.9")
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9")
+
+                api("io.springfox:springfox-swagger2:2.9.2")
+                api("io.springfox:springfox-swagger-ui:2.9.2")
+                api("com.squareup.okhttp3:okhttp:4.8.1")
+                api("com.baomidou:mybatis-plus-boot-starter:3.4.0")
+                api("com.github.liaochong:myexcel:3.9.4")
+                api("cn.hutool:hutool-all:5.4.1")
+                api("com.oracle.ojdbc:ojdbc8:19.3.0.0")
+                api("com.oracle.ojdbc:orai18n:19.3.0.0")
+                api("mysql:mysql-connector-java:8.0.21")
+                api("org.mariadb.jdbc:mariadb-java-client:2.6.2")
+                api("org.postgresql:postgresql:42.2.14")
+                implementation("org.springframework.boot:spring-boot-starter-data-redis:2.3.3.RELEASE")
+                implementation("org.springframework.boot:spring-boot-starter-web:2.3.3.RELEASE")
+                api("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.2")
+                api("com.fasterxml.jackson.module:jackson-module-parameter-names:2.11.2")
+                api("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.2")
+                api("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.2")
+                implementation("org.springframework.kafka:spring-kafka:2.5.5.RELEASE")
             }
         }
     }

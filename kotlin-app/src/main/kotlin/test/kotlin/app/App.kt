@@ -3,6 +3,7 @@
  */
 package test.kotlin.app
 
+import cn.hutool.core.util.RandomUtil
 import test.kotlin.lib.Library
 
 class App {
@@ -14,5 +15,6 @@ class App {
 
 fun main(args: Array<String>) {
     println(Library().someLibraryMethod())
+    println(RandomUtil.randomString(120))
     println(App().greeting)
 }

@@ -6,15 +6,18 @@
  */
 plugins {
     kotlin("jvm") version "1.4.10" apply false
+    kotlin("plugin.spring") version "1.4.10" apply false
+    kotlin("plugin.jpa") version "1.4.10" apply false
     id("org.jetbrains.dokka") version "1.4.0" apply false
 }
 allprojects {
     repositories {
         mavenLocal()
         maven("http://maven.aliyun.com/nexus/content/groups/public")
+        jcenter()
+        maven("http://af.hikvision.com.cn:80/artifactory/maven-down/")
         // Use jcenter for resolving dependencies.
         // You can declare any Maven/Ivy/file repository here.
-        jcenter()
     }
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java).configureEach {
         kotlinOptions.suppressWarnings=false

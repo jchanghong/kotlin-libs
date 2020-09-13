@@ -6,11 +6,15 @@
 
 plugins {
     kotlin("jvm")
+    kotlin("plugin.jpa")
+    kotlin("plugin.spring")
     // Apply the Kotlin JVM plugin to add support for Kotlin.
 //    id("org.jetbrains.kotlin.jvm") version "1.3.72"
 
     // Apply the application plugin to add support for building a CLI application.
     application
+    id("org.springframework.boot") version "2.3.3.RELEASE"
+    id("io.spring.dependency-management") version "1.0.10.RELEASE"
 }
 kotlin{
     sourceSets {
@@ -43,6 +47,13 @@ dependencies {
 //    testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
     implementation(project(":kotlin-lib"))
 //        implementation("com.github.jchanghong:kotlin-lib:1.0")
+        implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch:2.3.3.RELEASE")
+//        implementation("org.springframework.boot:spring-boot-starter-web:2.3.3.RELEASE")
+    testImplementation("org.springframework.boot:spring-boot-starter-test:2.3.3.RELEASE")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+    }
 
 }
 
