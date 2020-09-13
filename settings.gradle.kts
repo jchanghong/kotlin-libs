@@ -10,3 +10,13 @@
 rootProject.name = "gradleDemo"
 include("kotlin-lib")
 include("kotlin-app")
+pluginManagement {
+    repositories {
+        mavenLocal()
+        maven("http://maven.aliyun.com/nexus/content/groups/public")
+        // Use jcenter for resolving dependencies.
+        // You can declare any Maven/Ivy/file repository here.
+        gradlePluginPortal()
+        jcenter()
+    }
+}
