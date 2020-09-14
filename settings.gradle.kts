@@ -7,7 +7,7 @@
  * in the user manual at https://docs.gradle.org/6.6.1/userguide/multi_project_builds.html
  */
 
-rootProject.name = "gradleDemo"
+rootProject.name = "kotlin-lib"
 include("kotlin-lib")
 include("kotlin-app")
 pluginManagement {
