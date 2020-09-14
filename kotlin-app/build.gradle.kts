@@ -11,7 +11,9 @@ plugins {
     application
     id("org.springframework.boot")
     id("io.spring.dependency-management")
+    id("com.github.jchanghong.testplugin") version "1.0"
 }
+testplugin.message="jch"
 kotlin{
     sourceSets {
         val test by getting {

@@ -22,8 +22,8 @@ publishing {
         create<MavenPublication>("maven") {
             from(components["java"])
             groupId="com.github.jchanghong"
-            version="2.3.3.2"
-            artifactId="kotlin-lib"
+            version="1.0"
+            artifactId="testplugin"
             pom {
                 name.set("kotlin-lib")
                 description.set("kotlin java tools")
