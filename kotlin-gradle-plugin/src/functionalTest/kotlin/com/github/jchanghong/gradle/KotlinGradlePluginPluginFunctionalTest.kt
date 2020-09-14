@@ -9,7 +9,7 @@ import kotlin.test.Test
 import kotlin.test.assertTrue
 
 /**
- * A simple functional test for the 'com.github.jchanghong.gradle.greeting' plugin.
+ * A simple functional test for the 'com.github.jchanghong.gradle.testplugin' plugin.
  */
 class KotlinGradlePluginPluginFunctionalTest {
     @Test fun `can run task`() {
@@ -19,7 +19,7 @@ class KotlinGradlePluginPluginFunctionalTest {
         projectDir.resolve("settings.gradle").writeText("")
         projectDir.resolve("build.gradle").writeText("""
             plugins {
-                id('com.github.jchanghong.gradle.greeting')
+                id('com.github.jchanghong.gradle.testplugin')
             }
         """)
 
@@ -27,11 +27,11 @@ class KotlinGradlePluginPluginFunctionalTest {
         val runner = GradleRunner.create()
         runner.forwardOutput()
         runner.withPluginClasspath()
-        runner.withArguments("greeting")
+        runner.withArguments("testplugin")
         runner.withProjectDir(projectDir)
         val result = runner.build();
 
         // Verify the result
-        assertTrue(result.output.contains("Hello from plugin 'com.github.jchanghong.gradle.greeting'"))
+        assertTrue(result.output.contains("Hello from plugin 'com.github.jchanghong.gradle.testplugin'"))
     }
 }

@@ -8,15 +8,15 @@ import kotlin.test.Test
 import kotlin.test.assertNotNull
 
 /**
- * A simple unit test for the 'com.github.jchanghong.gradle.greeting' plugin.
+ * A simple unit test for the 'com.github.jchanghong.gradle.testplugin' plugin.
  */
 class KotlinGradlePluginPluginTest {
     @Test fun `plugin registers task`() {
         // Create a test project and apply the plugin
         val project = ProjectBuilder.builder().build()
-        project.plugins.apply("com.github.jchanghong.gradle.greeting")
+        project.plugins.apply("com.github.jchanghong.gradle.testplugin")
 
         // Verify the result
-        assertNotNull(project.tasks.findByName("greeting"))
+        assertNotNull(project.tasks.findByName("testplugin"))
     }
 }

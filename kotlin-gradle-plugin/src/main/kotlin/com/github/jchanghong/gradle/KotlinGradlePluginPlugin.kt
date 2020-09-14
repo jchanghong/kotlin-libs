@@ -5,16 +5,20 @@ package com.github.jchanghong.gradle
 
 import org.gradle.api.Project
 import org.gradle.api.Plugin
-
+open class GreetingPluginExtension {
+    var message = "5111122222222222222222222Hello from GreetingPlugin"
+}
 /**
  * A simple 'hello world' plugin.
  */
 class KotlinGradlePluginPlugin: Plugin<Project> {
     override fun apply(project: Project) {
+        // Add the 'testplugin' extension object
+        val extension = project.extensions.create("testplugin",GreetingPluginExtension::class.java)
         // Register a task
-        project.tasks.register("greeting") { task ->
+        project.tasks.register("testplugin") { task ->
             task.doLast {
-                println("Hello from plugin 'com.github.jchanghong.gradle.greeting'")
+                println(" ${extension.message} Hello from plugin 'com.github.jchanghong.gradle.testplugin'")
             }
         }
     }
