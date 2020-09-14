@@ -4,8 +4,19 @@
 package com.github.jchanghong
 
 import com.github.jchanghong.tasks.LatestArtifactVersionTask
-import org.gradle.api.Project
+import org.gradle.api.Action
 import org.gradle.api.Plugin
+import org.gradle.api.Project
+import org.gradle.api.plugins.JavaPlugin
+import org.gradle.api.plugins.JavaPluginConvention
+import org.gradle.api.tasks.SourceSet
+import org.gradle.api.tasks.compile.JavaCompile
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformJvmPlugin
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.slf4j.LoggerFactory
+import java.util.*
+
+
 open class GreetingPluginExtension {
     var message = "5111122222222222222222222Hello from GreetingPlugin"
 }
@@ -34,6 +45,24 @@ class KotlinGradlePluginPlugin: Plugin<Project> {
     }
 
     private fun applyAll(project: Project) {
-//        project.tas
+        project.plugins.withId("org.jetbrains.kotlin.jvm"){
+            project.logger.quiet("kotlin========")
+            val apply = project.plugins.apply("org.jetbrains.kotlin.plugin.jpa")
+            val apply1 = project.plugins.apply("org.jetbrains.kotlin.plugin.spring")
+        }
+        project.plugins.withType(JavaPlugin::class.java).configureEach {
+            project.logger.quiet("configureEach ${it::class.qualifiedName}")
+            val javaConvention = project.convention.getPlugin(JavaPluginConvention::class.java)
+            val main = javaConvention.sourceSets.getByName(SourceSet.MAIN_SOURCE_SET_NAME)
+//            main.java.setSrcDirs(Arrays.asList("src"))
+            project.logger.quiet(main.allJava.joinToString { it.absolutePath })
+        }
+        project.tasks.withType(JavaCompile::class.java).configureEach {
+            it.targetCompatibility="1.8"
+        }
+        project.tasks.withType(KotlinCompile::class.java).configureEach {
+            it.kotlinOptions.jvmTarget="1.8"
+            it.kotlinOptions.freeCompilerArgs=listOf("-Xjsr305=strict")
+        }
     }
 }

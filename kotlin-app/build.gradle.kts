@@ -6,14 +6,13 @@
 
 plugins {
     kotlin("jvm")
-    kotlin("plugin.jpa")
-    kotlin("plugin.spring")
+//    kotlin("plugin.jpa")
+//    kotlin("plugin.spring")
     application
     id("org.springframework.boot")
     id("io.spring.dependency-management")
-    id("com.github.jchanghong.testplugin") version "1.0"
 }
-testplugin.message="jch"
+//testplugin.message="jch"
 kotlin{
     sourceSets {
         val test by getting {
