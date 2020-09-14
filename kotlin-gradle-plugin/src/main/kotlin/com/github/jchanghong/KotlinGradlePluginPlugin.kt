@@ -3,6 +3,7 @@
  */
 package com.github.jchanghong
 
+import com.github.jchanghong.tasks.LatestArtifactVersionTask
 import org.gradle.api.Project
 import org.gradle.api.Plugin
 open class GreetingPluginExtension {
@@ -13,13 +14,26 @@ open class GreetingPluginExtension {
  */
 class KotlinGradlePluginPlugin: Plugin<Project> {
     override fun apply(project: Project) {
+        project.allprojects { applyAll(it) }
+         project.tasks.register("tasks1", LatestArtifactVersionTask::class.java) {
+            it.serverUrl = "ser"
+            it.coordinates = "co"
+            it.doLast {
+                println("end task")
+            }
+        }
         // Add the 'testplugin' extension object
         val extension = project.extensions.create("testplugin", GreetingPluginExtension::class.java)
         // Register a task
         project.tasks.register("testplugin") { task ->
+            task.dependsOn("tasks1")
             task.doLast {
                 println(" ${extension.message} Hello from plugin 'com.github.jchanghong.testplugin'")
             }
         }
+    }
+
+    private fun applyAll(project: Project) {
+//        project.tas
     }
 }
