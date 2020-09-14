@@ -98,9 +98,9 @@ dependencies {
 gradlePlugin {
     // Define the plugin
     val testplugin by plugins.creating {
-        id = "com.github.jchanghong.gradle.testplugin"
+        id = "com.github.jchanghong.testplugin"
         version="1.0"
-        implementationClass = "com.github.jchanghong.gradle.KotlinGradlePluginPlugin"
+        implementationClass = "com.github.jchanghong.KotlinGradlePluginPlugin"
     }
 }
 
