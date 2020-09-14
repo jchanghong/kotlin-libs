@@ -10,6 +10,7 @@
 rootProject.name = "kotlin-lib"
 include("kotlin-lib")
 include("kotlin-app")
+include("kotlin-gradle-plugin")
 pluginManagement {
     repositories {
         mavenLocal()
