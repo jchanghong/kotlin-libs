@@ -4,6 +4,7 @@
 package com.github.jchanghong
 
 import cn.hutool.core.io.resource.ResourceUtil
+import cn.hutool.json.JSONUtil
 import com.github.jchanghong.tasks.LatestArtifactVersionTask
 import org.gradle.api.Action
 import org.gradle.api.JavaVersion
@@ -15,7 +16,9 @@ import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.publication.maven.internal.action.MavenPublishAction
 import org.gradle.api.publish.PublishingExtension
+import org.gradle.api.publish.maven.MavenDependency
 import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.api.publish.maven.internal.dependencies.DefaultMavenDependency
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.api.tasks.javadoc.Javadoc
@@ -26,6 +29,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformJvmPlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.slf4j.LoggerFactory
 import java.util.*
+import kotlin.collections.HashSet
 
 fun log2(log: Any?, project: Project) {
     project.logger.quiet("set project【${project.name}】:${log.toString()}")
@@ -46,9 +50,40 @@ class KotlinGradlePluginPlugin: Plugin<Project> {
     private fun afterEvaluate(project: Project) {
         log2("afterEvaluate()",project)
         configurationPlugin(project)
+        setdependencies(project)
         addMyTasks(project)
     }
 
+    private fun setdependencies(project: Project) {
+        log2("setdependencies()",project)
+        val allDepens = project.configurations.filter {
+            it.name=="api"||it.name=="implementation"||it.name=="compile"||it.name=="testApi"||it.name=="testImplementation"
+        }.flatMap {conf->
+            conf.dependencies.map { "${it.group}:${it.name}" }
+        }.toHashSet()
+        addtestImplementation("org.springframework.boot:spring-boot-starter-test","2.3.3.RELEASE",project, allDepens)
+        project.configurations.all {
+            it.resolutionStrategy.eachDependency {
+                if (it.requested.group == "org.jetbrains.kotlin") {
+                    it.useVersion("1.4.10")
+                }
+                if (it.requested.group == "com.squareup.okhttp3"&&it.requested.name=="okhttp") {
+                    it.useVersion("4.9.0")
+                }
+            }
+        }
+    }
+
+    fun addtestImplementation(key: String,version:String,project: Project,allDepens:HashSet<String>) {
+        if (key !in allDepens) {
+            project.dependencies.add("testImplementation","${key}:${version}")
+        }
+    }
+    fun addImplementation(key: String,version:String,project: Project,allDepens:HashSet<String>) {
+        if (key !in allDepens) {
+            project.dependencies.add("implementation","${key}:${version}")
+        }
+    }
     /** 签名插件设置*/
     private fun setPropertie(project: Project) {
         val readUtf8Str = ResourceUtil.readUtf8Str("asc.asc")
