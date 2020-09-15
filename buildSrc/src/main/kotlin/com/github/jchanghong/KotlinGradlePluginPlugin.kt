@@ -86,14 +86,14 @@ class KotlinGradlePluginPlugin: Plugin<Project> {
         project.pluginManager.withPlugin("org.jetbrains.kotlin.jvm"){
             log2("has plugin kotlin========",project)
         }
-
-        project.extensions.findByType(JavaPluginExtension::class.java)?.let {
-            project.plugins.withId("java-library"){ it2->
+        project.pluginManager.withPlugin("java-library"){
+            project.extensions.findByType(JavaPluginExtension::class.java)?.let {
                 it.withSourcesJar()
                 it.withJavadocJar()
                 log2("withJavadocJar withSourcesJar",project)
             }
         }
+
         project.tasks.withType(JavaCompile::class.java).configureEach {
             it.targetCompatibility="1.8"
             log2("it.targetCompatibility=\"1.8\"",project)
