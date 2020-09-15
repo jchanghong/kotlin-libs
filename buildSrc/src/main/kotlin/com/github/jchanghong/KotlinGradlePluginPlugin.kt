@@ -3,20 +3,30 @@
  */
 package com.github.jchanghong
 
+import cn.hutool.core.io.resource.ResourceUtil
 import com.github.jchanghong.tasks.LatestArtifactVersionTask
 import org.gradle.api.Action
+import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.plugins.JavaLibraryPlugin
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.JavaPluginConvention
+import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.compile.JavaCompile
+import org.gradle.api.tasks.javadoc.Javadoc
+import org.gradle.external.javadoc.StandardJavadocDocletOptions
+import org.gradle.plugins.signing.SigningExtension
+import org.gradle.plugins.signing.SigningPlugin
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformJvmPlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.slf4j.LoggerFactory
 import java.util.*
 
-
+fun log2(log: Any?, project: Project) {
+    project.logger.quiet("set project【${project.name}】:${log.toString()}")
+}
 open class GreetingPluginExtension {
     var message = "1Hello from GreetingPlugin"
 }
@@ -25,44 +35,126 @@ open class GreetingPluginExtension {
  */
 class KotlinGradlePluginPlugin: Plugin<Project> {
     override fun apply(project: Project) {
-        project.allprojects { applyAll(it) }
-         project.tasks.register("tasks1", LatestArtifactVersionTask::class.java) {
-            it.serverUrl = "ser"
-            it.coordinates = "co"
-            it.doLast {
-                println("end task")
-            }
-        }
-        // Add the 'testplugin' extension object
-        val extension = project.extensions.create("testplugin", GreetingPluginExtension::class.java)
-        // Register a task
-        project.tasks.register("testplugin") { task ->
-            task.dependsOn("tasks1")
-            task.doLast {
-                println(" ${extension.message} Hello from plugin 'com.github.jchanghong.testplugin'")
+        setPropertie(project)
+        setRepositories(project)
+        addPlugin(project)
+        configurationPlugin(project)
+        addMyTasks(project)
+        project.afterEvaluate { afterEvaluate(it) }
+    }
+
+
+    private fun afterEvaluate(project: Project) {
+        log2("afterEvaluate()",project)
+    }
+
+    /** 签名插件设置*/
+    private fun setPropertie(project: Project) {
+        val readUtf8Str = ResourceUtil.readUtf8Str("asc.asc")
+        project.pluginManager.withPlugin("signing"){
+            project.extensions.findByType(SigningExtension::class.java)?.let {
+                it.useInMemoryPgpKeys(readUtf8Str,"123buyaodaohao")
+                log2("set signing ",project)
             }
         }
     }
 
-    private fun applyAll(project: Project) {
-        project.plugins.withId("org.jetbrains.kotlin.jvm"){
-            project.logger.quiet("kotlin========")
-            val apply = project.plugins.apply("org.jetbrains.kotlin.plugin.jpa")
-            val apply1 = project.plugins.apply("org.jetbrains.kotlin.plugin.spring")
+    private fun addMyTasks(project: Project) {
+        log2("addMyTasks()",project)
+
+//        project.allprojects { applyAll(it) }
+//         project.tasks.register("tasks1", LatestArtifactVersionTask::class.java) {
+//            it.serverUrl = "ser"
+//            it.coordinates = "co"
+//            it.doLast {
+//                println("end task")
+//            }
+//        }
+//        // Add the 'testplugin' extension object
+//        val extension = project.extensions.create("testplugin", GreetingPluginExtension::class.java)
+//        // Register a task
+//        project.tasks.register("testplugin") { task ->
+//            task.dependsOn("tasks1")
+//            task.doLast {
+//                println(" ${extension.message} Hello from plugin 'com.github.jchanghong.testplugin'")
+//            }
+//        }
+    }
+
+    private fun configurationPlugin(project: Project) {
+        log2("configurationPlugin()",project)
+        project.pluginManager.withPlugin("org.jetbrains.kotlin.jvm"){
+            log2("has plugin kotlin========",project)
         }
-        project.plugins.withType(JavaPlugin::class.java).configureEach {
-            project.logger.quiet("configureEach ${it::class.qualifiedName}")
-            val javaConvention = project.convention.getPlugin(JavaPluginConvention::class.java)
-            val main = javaConvention.sourceSets.getByName(SourceSet.MAIN_SOURCE_SET_NAME)
-//            main.java.setSrcDirs(Arrays.asList("src"))
-            project.logger.quiet(main.allJava.joinToString { it.absolutePath })
+
+        project.extensions.findByType(JavaPluginExtension::class.java)?.let {
+            project.plugins.withId("java-library"){ it2->
+                it.withSourcesJar()
+                it.withJavadocJar()
+                log2("withJavadocJar withSourcesJar",project)
+            }
         }
         project.tasks.withType(JavaCompile::class.java).configureEach {
             it.targetCompatibility="1.8"
+            log2("it.targetCompatibility=\"1.8\"",project)
         }
         project.tasks.withType(KotlinCompile::class.java).configureEach {
             it.kotlinOptions.jvmTarget="1.8"
             it.kotlinOptions.freeCompilerArgs=listOf("-Xjsr305=strict")
+            log2("it.kotlinOptions.jvmTarget=\"1.8\"",project)
+        }
+        project.plugins.withType(io.spring.gradle.dependencymanagement.DependencyManagementPlugin::class.java)
+            .configureEach {
+                val findByType =
+                    project.extensions.findByType(io.spring.gradle.dependencymanagement.internal.dsl.StandardDependencyManagementExtension::class.java)
+                findByType?.imports {
+                    it.mavenBom(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
+                }
+                log2("apply plugin boot DependencyManagementPlugin",project)
+            }
+
+        project.tasks.findByName("releaseNexusRepositories")?.dependsOn("publish")
+        project.tasks.withType(Javadoc::class.java) {
+            if (JavaVersion.current().isJava9Compatible) {
+                (it.options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
+            }
+        }
+    }
+
+    private fun addPlugin(project: Project) {
+        log2("addPlugin()",project)
+        project.pluginManager.withPlugin("java"){
+            log2("has java plugin, add DependencyManagementPlugin kotlin dokka",project)
+            project.pluginManager.apply(io.spring.gradle.dependencymanagement.DependencyManagementPlugin::class.java)
+            project.pluginManager.apply(org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper::class.java)
+            project.pluginManager.apply(org.jetbrains.kotlin.allopen.gradle.SpringGradleSubplugin::class.java)
+            project.pluginManager.apply(org.jetbrains.kotlin.noarg.gradle.KotlinJpaSubplugin::class.java)
+            project.pluginManager.apply(org.jetbrains.dokka.gradle.DokkaPlugin::class.java)
+        }
+        project.pluginManager.withPlugin("application"){
+            log2("has plugin application,add SpringBootPlugin",project)
+            project.pluginManager.apply(org.springframework.boot.gradle.plugin.SpringBootPlugin::class.java)
+        }
+        project.pluginManager.withPlugin("java-library"){
+            log2("has plugin java-library add SigningPlugin",project)
+            project.pluginManager.apply(SigningPlugin::class.java)
+        }
+        project.pluginManager.withPlugin("maven-publish"){
+            log2("has plugin maven-publish add MavenPublishNexusStagingPlugin",project)
+            project.pluginManager.apply(name.remal.gradle_plugins.plugins.publish.nexus_staging.MavenPublishNexusStagingPlugin::class.java)
+        }
+    }
+
+    private fun setRepositories(project: Project) {
+        log2("setRepositories()",project)
+//          maven("http://maven.aliyun.com/nexus/content/groups/public")
+//        jcenter()
+//        maven("http://af.hikvision.com.cn:80/artifactory/maven-down/")
+        project.repositories.mavenLocal()
+        project.repositories.maven { it.setUrl("http://maven.aliyun.com/nexus/content/groups/public") }
+        project.repositories.jcenter()
+        project.repositories.maven {
+            it.setUrl("http://af.hikvision.com.cn:80/artifactory/maven-down/")
         }
     }
 }

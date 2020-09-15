@@ -5,22 +5,24 @@
  */
 import name.remal.gradle_plugins.dsl.extensions.*
 plugins {
-    id("org.springframework.boot")  apply false
-    kotlin("jvm")
-    kotlin("plugin.jpa")
-    kotlin("plugin.spring")
-    id("org.jetbrains.dokka")
-    `java-library`
+    id("com.github.jchanghong.testplugin") apply true
+//    id("org.springframework.boot")  apply false
+//    kotlin("jvm")
+//    kotlin("plugin.jpa")
+//    kotlin("plugin.spring")
+//    id("org.jetbrains.dokka")
+//    `java-library`
     signing
     `maven-publish`
-    id("name.remal.maven-publish-nexus-staging") version "1.0.211"
-    id("io.spring.dependency-management")
+//    id("name.remal.maven-publish-nexus-staging")
+//    id("io.spring.dependency-management")
+    `java-library`
 }
-dependencyManagement {
-    imports {
-        mavenBom(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
-    }
-}
+//dependencyManagement {
+//    imports {
+//        mavenBom(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
+//    }
+//}
 configurations.all {
     resolutionStrategy.eachDependency {
         if (requested.group == "org.jetbrains.kotlin") {
@@ -119,16 +121,4 @@ kotlin{
             }
         }
     }
-}
-java{
-    withJavadocJar()
-    withSourcesJar()
-}
-tasks.javadoc {
-    if (JavaVersion.current().isJava9Compatible) {
-        (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
-    }
-}
-tasks.named("releaseNexusRepositories"){
-    this.dependsOn("publish")
 }
