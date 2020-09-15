@@ -13,6 +13,9 @@ import org.gradle.api.plugins.JavaLibraryPlugin
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.plugins.JavaPluginExtension
+import org.gradle.api.publication.maven.internal.action.MavenPublishAction
+import org.gradle.api.publish.PublishingExtension
+import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.api.tasks.javadoc.Javadoc
@@ -38,14 +41,12 @@ class KotlinGradlePluginPlugin: Plugin<Project> {
         setPropertie(project)
         setRepositories(project)
         addPlugin(project)
-        configurationPlugin(project)
-        addMyTasks(project)
         project.afterEvaluate { afterEvaluate(it) }
     }
-
-
     private fun afterEvaluate(project: Project) {
         log2("afterEvaluate()",project)
+        configurationPlugin(project)
+        addMyTasks(project)
     }
 
     /** 签名插件设置*/
@@ -118,6 +119,62 @@ class KotlinGradlePluginPlugin: Plugin<Project> {
       }
         project.pluginManager.withPlugin("name.remal.maven-publish-nexus-staging"){
             project.tasks.findByName("releaseNexusRepositories")?.dependsOn("publish")
+        }
+        setmavenpublish(project)
+    }
+
+    private fun setmavenpublish(project: Project) {
+        project.pluginManager.withPlugin("maven-publish"){
+            project.tasks.findByName("releaseNexusRepositories")?.dependsOn("publish")
+            val extension = project.extensions.findByType(PublishingExtension::class.java)
+            if (extension != null) {
+                val mavenPublication = extension.publications.maybeCreate("MAVEN", MavenPublication::class.java)
+                mavenPublication.from(project.components.findByName("java"))
+                mavenPublication.pom.apply {
+                    name.set("kotlin-lib")
+                    description.set("kotlin java tools")
+                    url.set("http://www.example.com/library")
+                    licenses {
+
+                        it.license {
+                            name.set("The Apache License, Version 2.0")
+                            url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                        }
+                    }
+                    developers {
+                        it.developer {
+                            it.email.set("3200601e@qq.com")
+                        }
+                    }
+                    scm {
+                        it.connection.set("scm:git:https://github.com/jchanghong/utils.git")
+                        it.developerConnection.set("scm:git:git@github.com:jchanghong/utils.git")
+                        url.set("git@github.com:jchanghong/utils.git")
+                    }
+                }
+                extension.repositories.apply {
+                    maven {
+                        it.name="sona"
+                        val releasesRepoUrl = project.uri("https://oss.sonatype.org/service/local/staging/deploy/maven2")
+                        val snapshotsRepoUrl = project.uri("${project.buildDir}/repos/snapshots")
+//            val releasesRepoUrl = uri("$buildDir/repos/releases")
+
+                        it. url = if (project.version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
+                        if (it.url.toString().startsWith("http")) {
+                            it.isAllowInsecureProtocol=true
+                            it.credentials {
+                                it.username="jchanghong"
+                                it.password="!b58r5gsHu*0"
+                            }
+                        }
+                    }
+                }
+                val signingExtension = project.extensions.findByType(SigningExtension::class.java)
+                if (signingExtension != null) {
+                    signingExtension.sign(mavenPublication)
+                    log2("add mavenPublication",project)
+                }
+            }
         }
     }
 
