@@ -7,16 +7,34 @@
  */
 
 plugins {
+    id("com.github.jchanghong.jch") apply true
+
     // Apply the Java Gradle plugin development plugin to add support for developing Gradle plugins
     `java-gradle-plugin`
 
-    kotlin("jvm")
+    kotlin("jvm")  apply true
     `java-library`
     signing
     `maven-publish`
-    id("name.remal.maven-publish-nexus-staging") version "1.0.211"
-}
 
+//    id("name.remal.maven-publish-nexus-staging") version "1.0.211"
+}
+repositories {
+    mavenLocal()
+    maven("http://maven.aliyun.com/nexus/content/groups/public")
+    jcenter()
+    maven("http://af.hikvision.com.cn:80/artifactory/maven-down/")
+    // Use jcenter for resolving dependencies.
+    // You can declare any Maven/Ivy/file repository here.
+}
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java).configureEach {
+//        kotlinOptions.suppressWarnings=false
+    kotlinOptions.jvmTarget="1.8"
+//        kotlinOptions.verbose=true
+//        kotlinOptions.javaParameters=true
+//        kotlinOptions.useIR=true
+    kotlinOptions.freeCompilerArgs = listOf("-Xjsr305=strict")
+}
 publishing {
     publications {
         create<MavenPublication>("maven") {
@@ -78,15 +96,25 @@ tasks.javadoc {
         (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
     }
 }
-tasks.named("releaseNexusRepositories"){
-    this.dependsOn("publish")
-}
+//tasks.named("releaseNexusRepositories"){
+//    this.dependsOn("publish")
+//}
 dependencies {
     // Align versions of all Kotlin components
 //    implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
 
     // Use the Kotlin JDK 8 standard library.
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin")
+//    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin")
+    api("cn.hutool:hutool-all:5.4.1")
+
+    api("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.10")
+    api("org.jetbrains.dokka:dokka-gradle-plugin:1.4.0")
+    api("org.jetbrains.kotlin:kotlin-allopen:1.4.10")
+    api("org.jetbrains.kotlin:kotlin-noarg:1.4.10")
+
+    api("org.springframework.boot:spring-boot-gradle-plugin:2.3.3.RELEASE")
+    api("io.spring.gradle:dependency-management-plugin:1.0.10.RELEASE")
+    api("name.remal:gradle-plugins:1.0.211")
 
     // Use the Kotlin test library.
     testImplementation("org.jetbrains.kotlin:kotlin-test")
@@ -97,27 +125,27 @@ dependencies {
 
 gradlePlugin {
     // Define the plugin
-    val testplugin by plugins.creating {
-        id = "com.github.jchanghong.testplugin"
+    val jch by plugins.creating {
+        id = "com.github.jchanghong.jch"
         version="1.0"
-        implementationClass = "com.github.jchanghong.KotlinGradlePluginPlugin"
+        implementationClass = "com.github.jchanghong.JchGradlePlugin"
     }
 }
 
 // Add a source set for the functional test suite
-val functionalTestSourceSet = sourceSets.create("functionalTest") {
-}
+//val functionalTestSourceSet = sourceSets.create("functionalTest") {
+//}
 
-gradlePlugin.testSourceSets(functionalTestSourceSet)
-configurations.getByName("functionalTestImplementation").extendsFrom(configurations.getByName("testImplementation"))
+//gradlePlugin.testSourceSets(functionalTestSourceSet)
+//configurations.getByName("functionalTestImplementation").extendsFrom(configurations.getByName("testImplementation"))
 
 // Add a task to run the functional tests
-val functionalTest by tasks.registering(Test::class) {
-    testClassesDirs = functionalTestSourceSet.output.classesDirs
-    classpath = functionalTestSourceSet.runtimeClasspath
-}
+//val functionalTest by tasks.registering(Test::class) {
+//    testClassesDirs = functionalTestSourceSet.output.classesDirs
+//    classpath = functionalTestSourceSet.runtimeClasspath
+//}
 
 val check by tasks.getting(Task::class) {
     // Run the functional tests as part of `check`
-    dependsOn(functionalTest)
+//    dependsOn(functionalTest)
 }

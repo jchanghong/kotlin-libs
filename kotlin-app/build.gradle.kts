@@ -7,7 +7,7 @@
 
 plugins {
     application
-    id("com.github.jchanghong.testplugin") apply true
+    id("com.github.jchanghong.jch") apply true
 }
 dependencies {
 //        implementation("com.github.jchanghong:kotlin-lib:1.0.1")
@@ -19,8 +19,4 @@ dependencies {
 application {
     // Define the main class for the application.
     mainClassName = "test.kotlin.app.AppKt"
-}
-
-tasks.create("aaaaa", com.github.jchanghong.tasks.LatestArtifactVersionTask::class.java){
-    this.serverUrl="hello input"
 }

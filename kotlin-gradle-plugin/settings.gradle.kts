@@ -7,10 +7,10 @@
  * in the user manual at https://docs.gradle.org/6.6.1/userguide/multi_project_builds.html
  */
 
-rootProject.name = "kotlin-libs"
-include("kotlin-lib")
-include("kotlin-app")
-include("kotlin-gradle-plugin")
+//rootProject.name = "kotlin-lib"
+//include("kotlin-lib")
+//include("kotlin-app")
+//include("kotlin-gradle-plugin")
 pluginManagement {
     repositories {
         mavenLocal()

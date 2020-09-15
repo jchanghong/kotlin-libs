@@ -4,32 +4,18 @@
 package com.github.jchanghong
 
 import cn.hutool.core.io.resource.ResourceUtil
-import cn.hutool.json.JSONUtil
-import com.github.jchanghong.tasks.LatestArtifactVersionTask
-import org.gradle.api.Action
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.plugins.JavaLibraryPlugin
-import org.gradle.api.plugins.JavaPlugin
-import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.plugins.JavaPluginExtension
-import org.gradle.api.publication.maven.internal.action.MavenPublishAction
 import org.gradle.api.publish.PublishingExtension
-import org.gradle.api.publish.maven.MavenDependency
 import org.gradle.api.publish.maven.MavenPublication
-import org.gradle.api.publish.maven.internal.dependencies.DefaultMavenDependency
-import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.api.tasks.javadoc.Javadoc
 import org.gradle.external.javadoc.StandardJavadocDocletOptions
 import org.gradle.plugins.signing.SigningExtension
 import org.gradle.plugins.signing.SigningPlugin
-import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformJvmPlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.slf4j.LoggerFactory
-import java.util.*
-import kotlin.collections.HashSet
 
 fun log2(log: Any?, project: Project) {
     project.logger.quiet("set project【${project.name}】:${log.toString()}")
@@ -39,8 +25,9 @@ open class GreetingPluginExtension {
 }
 /**
  * A simple 'hello world' plugin.
+ * 一个工程一个对象实例
  */
-class KotlinGradlePluginPlugin: Plugin<Project> {
+class JchGradlePlugin: Plugin<Project> {
   lateinit  var myExtension:GreetingPluginExtension
     override fun apply(project: Project) {
         myExtension= project.extensions.create("jch", GreetingPluginExtension::class.java)
@@ -100,17 +87,10 @@ class KotlinGradlePluginPlugin: Plugin<Project> {
     private fun addMyTasks(project: Project) {
         log2("addMyTasks()",project)
         // Add the 'testplugin' extension object
-         project.tasks.register("tasks1", LatestArtifactVersionTask::class.java) {
-            it.serverUrl = "ser"
-            it.coordinates = "co"
-            it.doLast {
-                println("end task")
-            }
-        }
+
 
         // Register a task
         project.tasks.register("testplugin") { task ->
-            task.dependsOn("tasks1")
             task.doLast {
                 println(" ${myExtension.message} Hello from plugin 'com.github.jchanghong.testplugin'")
             }

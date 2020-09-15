@@ -122,10 +122,10 @@ dependencies {
 
 gradlePlugin {
     // Define the plugin
-    val testplugin by plugins.creating {
-        id = "com.github.jchanghong.testplugin"
+    val jch by plugins.creating {
+        id = "com.github.jchanghong.jch"
         version="1.0"
-        implementationClass = "com.github.jchanghong.KotlinGradlePluginPlugin"
+        implementationClass = "com.github.jchanghong.JchGradlePlugin"
     }
 }
 
