@@ -13,6 +13,7 @@ plugins {
 //    id("org.springframework.boot")  apply false
 //    id("io.spring.dependency-management")  apply false
 }
+
 allprojects {
     group="com.github.jchanghong"
     version="1"

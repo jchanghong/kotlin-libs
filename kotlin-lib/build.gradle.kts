@@ -43,3 +43,4 @@ kotlin{
         }
     }
 }
+jch.message="lib"

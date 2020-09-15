@@ -9,23 +9,6 @@ plugins {
     application
     id("com.github.jchanghong.testplugin") apply true
 }
-kotlin{
-    sourceSets {
-        val test by getting {
-            dependencies {
-//                implementation(kotlin("test-junit"))
-            }
-        }
-        val main by getting {
-            dependencies {
-//                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.3.9")
-            }
-        }
-    }
-}
-
-
-
 dependencies {
 //        implementation("com.github.jchanghong:kotlin-lib:1.0.1")
         implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
@@ -36,4 +19,8 @@ dependencies {
 application {
     // Define the main class for the application.
     mainClassName = "test.kotlin.app.AppKt"
+}
+
+tasks.create("aaaaa", com.github.jchanghong.tasks.LatestArtifactVersionTask::class.java){
+    this.serverUrl="hello input"
 }

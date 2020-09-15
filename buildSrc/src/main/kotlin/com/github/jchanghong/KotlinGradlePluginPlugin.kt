@@ -41,7 +41,9 @@ open class GreetingPluginExtension {
  * A simple 'hello world' plugin.
  */
 class KotlinGradlePluginPlugin: Plugin<Project> {
+  lateinit  var myExtension:GreetingPluginExtension
     override fun apply(project: Project) {
+        myExtension= project.extensions.create("jch", GreetingPluginExtension::class.java)
         setPropertie(project)
         setRepositories(project)
         addPlugin(project)
@@ -97,24 +99,22 @@ class KotlinGradlePluginPlugin: Plugin<Project> {
 
     private fun addMyTasks(project: Project) {
         log2("addMyTasks()",project)
+        // Add the 'testplugin' extension object
+         project.tasks.register("tasks1", LatestArtifactVersionTask::class.java) {
+            it.serverUrl = "ser"
+            it.coordinates = "co"
+            it.doLast {
+                println("end task")
+            }
+        }
 
-//        project.allprojects { applyAll(it) }
-//         project.tasks.register("tasks1", LatestArtifactVersionTask::class.java) {
-//            it.serverUrl = "ser"
-//            it.coordinates = "co"
-//            it.doLast {
-//                println("end task")
-//            }
-//        }
-//        // Add the 'testplugin' extension object
-//        val extension = project.extensions.create("testplugin", GreetingPluginExtension::class.java)
-//        // Register a task
-//        project.tasks.register("testplugin") { task ->
-//            task.dependsOn("tasks1")
-//            task.doLast {
-//                println(" ${extension.message} Hello from plugin 'com.github.jchanghong.testplugin'")
-//            }
-//        }
+        // Register a task
+        project.tasks.register("testplugin") { task ->
+            task.dependsOn("tasks1")
+            task.doLast {
+                println(" ${myExtension.message} Hello from plugin 'com.github.jchanghong.testplugin'")
+            }
+        }
     }
 
     private fun configurationPlugin(project: Project) {
