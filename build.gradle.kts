@@ -5,7 +5,7 @@
  * Learn how to create Gradle builds at https://guides.gradle.org/creating-new-gradle-builds
  */
 plugins {
-    id("com.github.jchanghong.jch") apply false
+    id("com.github.jchanghong.jchtest") apply false
 //    kotlin("jvm")  apply false
 //    kotlin("plugin.spring")  apply false
 //    kotlin("plugin.jpa")  apply false

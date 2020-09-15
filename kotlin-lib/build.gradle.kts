@@ -4,7 +4,7 @@
  * This generated file contains a sample Kotlin library project to get you started.
  */
 plugins {
-    id("com.github.jchanghong.jch") apply true
+    id("com.github.jchanghong.jchtest") apply true
     signing
     `maven-publish`
     `java-library`

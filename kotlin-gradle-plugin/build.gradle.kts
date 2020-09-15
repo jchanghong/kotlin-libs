@@ -7,7 +7,7 @@
  */
 
 plugins {
-    id("com.github.jchanghong.jch") apply true
+    id("com.github.jchanghong.jchtest") apply true
 
     // Apply the Java Gradle plugin development plugin to add support for developing Gradle plugins
     `java-gradle-plugin`

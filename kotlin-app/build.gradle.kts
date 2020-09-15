@@ -7,7 +7,7 @@
 
 plugins {
     application
-    id("com.github.jchanghong.jch") apply true
+    id("com.github.jchanghong.jchtest") apply true
 }
 dependencies {
 //        implementation("com.github.jchanghong:kotlin-lib:1.0.1")
