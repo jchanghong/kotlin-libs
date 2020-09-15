@@ -12,9 +12,6 @@ plugins {
 
     kotlin("jvm") version ("1.4.10") apply true
     `java-library`
-    signing
-    `maven-publish`
-    id("name.remal.maven-publish-nexus-staging") version "1.0.211"
 }
 repositories {
     mavenLocal()
@@ -32,92 +29,17 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java).conf
 //        kotlinOptions.useIR=true
     kotlinOptions.freeCompilerArgs = listOf("-Xjsr305=strict")
 }
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            from(components["java"])
-            groupId="com.github.jchanghong"
-            version="1.0"
-            artifactId="testplugin"
-            pom {
-                name.set("kotlin-lib")
-                description.set("kotlin java tools")
-                url.set("http://www.example.com/library")
-                licenses {
-                    license {
-                        name.set("The Apache License, Version 2.0")
-                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
-                    }
-                }
-                developers {
-                    developer {
-                        email.set("3200601e@qq.com")
-                    }
-                }
-                scm {
-                    connection.set("scm:git:https://github.com/jchanghong/utils.git")
-                    developerConnection.set("scm:git:git@github.com:jchanghong/utils.git")
-                    url.set("git@github.com:jchanghong/utils.git")
-                }
-            }
-        }
-    }
-    repositories {
-        maven {
-            name="sona"
-            val releasesRepoUrl = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2")
-            val snapshotsRepoUrl = uri("$buildDir/repos/snapshots")
-//            val releasesRepoUrl = uri("$buildDir/repos/releases")
-
-            url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
-            if (url.toString().startsWith("http")) {
-                this.isAllowInsecureProtocol=true
-                this.credentials {
-                    this.username="jchanghong"
-                    this.password="!b58r5gsHu*0"
-                }
-            }
-        }
-    }
-}
-signing {
-
-    sign(publishing.publications["maven"])
-}
-java{
-    withJavadocJar()
-    withSourcesJar()
-}
-tasks.javadoc {
-    if (JavaVersion.current().isJava9Compatible) {
-        (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
-    }
-}
-tasks.named("releaseNexusRepositories"){
-    this.dependsOn("publish")
-}
 dependencies {
-    // Align versions of all Kotlin components
-//    implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
 
-    // Use the Kotlin JDK 8 standard library.
-//    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin")
-    api("cn.hutool:hutool-all:5.4.1")
+    api("cn.hutool:hutool-all:latest.release")
 
-    api("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.10")
-    api("org.jetbrains.dokka:dokka-gradle-plugin:1.4.0")
-    api("org.jetbrains.kotlin:kotlin-allopen:1.4.10")
-    api("org.jetbrains.kotlin:kotlin-noarg:1.4.10")
-
-    api("org.springframework.boot:spring-boot-gradle-plugin:2.3.3.RELEASE")
-    api("io.spring.gradle:dependency-management-plugin:1.0.10.RELEASE")
-    api("name.remal:gradle-plugins:1.0.211")
-
-    // Use the Kotlin test library.
-    testImplementation("org.jetbrains.kotlin:kotlin-test")
-
-    // Use the Kotlin JUnit integration.
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
+    api("org.jetbrains.kotlin:kotlin-gradle-plugin:latest.release")
+    api("org.jetbrains.dokka:dokka-gradle-plugin:latest.release")
+    api("org.jetbrains.kotlin:kotlin-allopen:latest.release")
+    api("org.jetbrains.kotlin:kotlin-noarg:latest.release")
+    api("org.springframework.boot:spring-boot-gradle-plugin:latest.release")
+    api("io.spring.gradle:dependency-management-plugin:latest.release")
+    api("name.remal:gradle-plugins:latest.release")
 }
 
 gradlePlugin {
@@ -127,22 +49,4 @@ gradlePlugin {
         version="1.0"
         implementationClass = "com.github.jchanghong.test.JchGradlePlugin"
     }
-}
-
-// Add a source set for the functional test suite
-//val functionalTestSourceSet = sourceSets.create("functionalTest") {
-//}
-
-//gradlePlugin.testSourceSets(functionalTestSourceSet)
-//configurations.getByName("functionalTestImplementation").extendsFrom(configurations.getByName("testImplementation"))
-
-// Add a task to run the functional tests
-//val functionalTest by tasks.registering(Test::class) {
-//    testClassesDirs = functionalTestSourceSet.output.classesDirs
-//    classpath = functionalTestSourceSet.runtimeClasspath
-//}
-
-val check by tasks.getting(Task::class) {
-    // Run the functional tests as part of `check`
-//    dependsOn(functionalTest)
 }

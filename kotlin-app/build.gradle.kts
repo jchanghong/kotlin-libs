@@ -20,3 +20,5 @@ application {
     // Define the main class for the application.
     mainClassName = "test.kotlin.app.AppKt"
 }
+//jch.mavenVersionMap["cn.hutool:hutool-all"]="5.4.2"
+//jch.mavenVersionMap["org.springframework.boot"]="2.3.2.RELEASE"
