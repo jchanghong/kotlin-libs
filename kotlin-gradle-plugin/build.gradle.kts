@@ -14,88 +14,88 @@ plugins {
 
     kotlin("jvm")  apply true
     `java-library`
-    signing
+//    signing
     `maven-publish`
 
 //    id("name.remal.maven-publish-nexus-staging") version "1.0.211"
 }
-repositories {
-    mavenLocal()
-    maven("http://maven.aliyun.com/nexus/content/groups/public")
-    jcenter()
-    maven("http://af.hikvision.com.cn:80/artifactory/maven-down/")
-    // Use jcenter for resolving dependencies.
-    // You can declare any Maven/Ivy/file repository here.
-}
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java).configureEach {
-//        kotlinOptions.suppressWarnings=false
-    kotlinOptions.jvmTarget="1.8"
-//        kotlinOptions.verbose=true
-//        kotlinOptions.javaParameters=true
-//        kotlinOptions.useIR=true
-    kotlinOptions.freeCompilerArgs = listOf("-Xjsr305=strict")
-}
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            from(components["java"])
-            groupId="com.github.jchanghong"
-            version="1.0"
-            artifactId="testplugin"
-            pom {
-                name.set("kotlin-lib")
-                description.set("kotlin java tools")
-                url.set("http://www.example.com/library")
-                licenses {
-                    license {
-                        name.set("The Apache License, Version 2.0")
-                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
-                    }
-                }
-                developers {
-                    developer {
-                        email.set("3200601e@qq.com")
-                    }
-                }
-                scm {
-                    connection.set("scm:git:https://github.com/jchanghong/utils.git")
-                    developerConnection.set("scm:git:git@github.com:jchanghong/utils.git")
-                    url.set("git@github.com:jchanghong/utils.git")
-                }
-            }
-        }
-    }
-    repositories {
-        maven {
-            name="sona"
-            val releasesRepoUrl = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2")
-            val snapshotsRepoUrl = uri("$buildDir/repos/snapshots")
-//            val releasesRepoUrl = uri("$buildDir/repos/releases")
-
-            url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
-            if (url.toString().startsWith("http")) {
-                this.isAllowInsecureProtocol=true
-                this.credentials {
-                    this.username="jchanghong"
-                    this.password="!b58r5gsHu*0"
-                }
-            }
-        }
-    }
-}
-signing {
-
-    sign(publishing.publications["maven"])
-}
-java{
-    withJavadocJar()
-    withSourcesJar()
-}
-tasks.javadoc {
-    if (JavaVersion.current().isJava9Compatible) {
-        (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
-    }
-}
+//repositories {
+//    mavenLocal()
+//    maven("http://maven.aliyun.com/nexus/content/groups/public")
+//    jcenter()
+//    maven("http://af.hikvision.com.cn:80/artifactory/maven-down/")
+//    // Use jcenter for resolving dependencies.
+//    // You can declare any Maven/Ivy/file repository here.
+//}
+//tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java).configureEach {
+////        kotlinOptions.suppressWarnings=false
+//    kotlinOptions.jvmTarget="1.8"
+////        kotlinOptions.verbose=true
+////        kotlinOptions.javaParameters=true
+////        kotlinOptions.useIR=true
+//    kotlinOptions.freeCompilerArgs = listOf("-Xjsr305=strict")
+//}
+//publishing {
+//    publications {
+//        create<MavenPublication>("maven") {
+//            from(components["java"])
+//            groupId="com.github.jchanghong"
+//            version="1.0"
+//            artifactId="testplugin"
+//            pom {
+//                name.set("kotlin-lib")
+//                description.set("kotlin java tools")
+//                url.set("http://www.example.com/library")
+//                licenses {
+//                    license {
+//                        name.set("The Apache License, Version 2.0")
+//                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+//                    }
+//                }
+//                developers {
+//                    developer {
+//                        email.set("3200601e@qq.com")
+//                    }
+//                }
+//                scm {
+//                    connection.set("scm:git:https://github.com/jchanghong/utils.git")
+//                    developerConnection.set("scm:git:git@github.com:jchanghong/utils.git")
+//                    url.set("git@github.com:jchanghong/utils.git")
+//                }
+//            }
+//        }
+//    }
+//    repositories {
+//        maven {
+//            name="sona"
+//            val releasesRepoUrl = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2")
+//            val snapshotsRepoUrl = uri("$buildDir/repos/snapshots")
+////            val releasesRepoUrl = uri("$buildDir/repos/releases")
+//
+//            url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
+//            if (url.toString().startsWith("http")) {
+//                this.isAllowInsecureProtocol=true
+//                this.credentials {
+//                    this.username="jchanghong"
+//                    this.password="!b58r5gsHu*0"
+//                }
+//            }
+//        }
+//    }
+//}
+//signing {
+//
+//    sign(publishing.publications["maven"])
+//}
+//java{
+//    withJavadocJar()
+//    withSourcesJar()
+//}
+//tasks.javadoc {
+//    if (JavaVersion.current().isJava9Compatible) {
+//        (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
+//    }
+//}
 //tasks.named("releaseNexusRepositories"){
 //    this.dependsOn("publish")
 //}
