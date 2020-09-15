@@ -84,7 +84,11 @@ class KotlinGradlePluginPlugin: Plugin<Project> {
     private fun configurationPlugin(project: Project) {
         log2("configurationPlugin()",project)
         project.pluginManager.withPlugin("org.jetbrains.kotlin.jvm"){
-            log2("has plugin kotlin========",project)
+            project.tasks.withType(KotlinCompile::class.java).configureEach {
+                it.kotlinOptions.jvmTarget="1.8"
+                it.kotlinOptions.freeCompilerArgs=listOf("-Xjsr305=strict")
+                log2("it.kotlinOptions.jvmTarget=\"1.8\"",project)
+            }
         }
         project.pluginManager.withPlugin("java-library"){
             project.extensions.findByType(JavaPluginExtension::class.java)?.let {
@@ -92,32 +96,28 @@ class KotlinGradlePluginPlugin: Plugin<Project> {
                 it.withJavadocJar()
                 log2("withJavadocJar withSourcesJar",project)
             }
-        }
-
-        project.tasks.withType(JavaCompile::class.java).configureEach {
-            it.targetCompatibility="1.8"
-            log2("it.targetCompatibility=\"1.8\"",project)
-        }
-        project.tasks.withType(KotlinCompile::class.java).configureEach {
-            it.kotlinOptions.jvmTarget="1.8"
-            it.kotlinOptions.freeCompilerArgs=listOf("-Xjsr305=strict")
-            log2("it.kotlinOptions.jvmTarget=\"1.8\"",project)
-        }
-        project.plugins.withType(io.spring.gradle.dependencymanagement.DependencyManagementPlugin::class.java)
-            .configureEach {
-                val findByType =
-                    project.extensions.findByType(io.spring.gradle.dependencymanagement.internal.dsl.StandardDependencyManagementExtension::class.java)
-                findByType?.imports {
-                    it.mavenBom(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
+            project.tasks.withType(Javadoc::class.java) {
+                if (JavaVersion.current().isJava9Compatible) {
+                    (it.options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
                 }
-                log2("apply plugin boot DependencyManagementPlugin",project)
             }
-
-        project.tasks.findByName("releaseNexusRepositories")?.dependsOn("publish")
-        project.tasks.withType(Javadoc::class.java) {
-            if (JavaVersion.current().isJava9Compatible) {
-                (it.options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
+        }
+        project.pluginManager.withPlugin("java"){
+            project.tasks.withType(JavaCompile::class.java).configureEach {
+                it.targetCompatibility="1.8"
+                log2("it.targetCompatibility=\"1.8\"",project)
             }
+        }
+      project.pluginManager.withPlugin("io.spring.dependency-management"){
+          val findByType =
+              project.extensions.findByType(io.spring.gradle.dependencymanagement.internal.dsl.StandardDependencyManagementExtension::class.java)
+          findByType?.imports {
+              it.mavenBom(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
+          }
+          log2("apply plugin boot DependencyManagementPlugin",project)
+      }
+        project.pluginManager.withPlugin("name.remal.maven-publish-nexus-staging"){
+            project.tasks.findByName("releaseNexusRepositories")?.dependsOn("publish")
         }
     }
 
