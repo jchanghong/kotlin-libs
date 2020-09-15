@@ -5,13 +5,13 @@
  * Learn how to create Gradle builds at https://guides.gradle.org/creating-new-gradle-builds
  */
 plugins {
-    kotlin("jvm") version "1.4.10" apply false
+    kotlin("jvm")  apply false
     kotlin("plugin.spring") version "1.4.10" apply false
     kotlin("plugin.jpa") version "1.4.10" apply false
     id("org.jetbrains.dokka") version "1.4.0" apply false
     id("org.springframework.boot") version "2.3.3.RELEASE" apply false
     id("io.spring.dependency-management") version "1.0.10.RELEASE" apply false
-//    id("com.github.jchanghong.testplugin") version "1.0"
+    id("com.github.jchanghong.testplugin")
 }
 allprojects {
     repositories {
