@@ -16,7 +16,7 @@ plugins {
 
 allprojects {
     group="com.github.jchanghong"
-    version="2.3.3.3"
+    version="2.3.3.4"
 }
 //allprojects {
 //    repositories {
