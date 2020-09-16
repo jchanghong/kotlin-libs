@@ -5,7 +5,7 @@
  * For more details take a look at the Writing Custom Plugins chapter in the Gradle
  * User Manual available at https://docs.gradle.org/6.6.1/userguide/custom_plugins.html
  */
-version="0.3"
+version="2.3.3"
 plugins {
     // Apply the Java Gradle plugin development plugin to add support for developing Gradle plugins
     id("com.github.jchanghong.jchtest") apply true

@@ -7,8 +7,14 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 
 internal fun log2(log: Any?, project: Project, logInfo: Boolean) {
+    val get = project.properties.get("jch.debug").toString().toBoolean()
     if (logInfo) {
         project.logger.quiet("set project【${project.name}】:${log.toString()}")
+    }
+    else{
+        if (get) {
+            project.logger.quiet("set project【${project.name}】:${log.toString()}")
+        }
     }
 }
 
