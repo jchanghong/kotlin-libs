@@ -81,43 +81,19 @@ internal fun setmavenpublish(project: Project) {
         }
     }
     project.pluginManager.withPlugin("com.gradle.plugin-publish"){
-        val publishingExtension = project.extensions.findByType(PublishingExtension::class.java)
-        log2(publishingExtension,project)
-
         val signingExtension = project.extensions.findByType(SigningExtension::class.java)
-
-        for (publish in listOf("JCH","pluginMaven", "jchPluginPluginMarkerMaven")) {
-            val taskName="generateMetadataFileFor${publish}Publication"
-            val taskName2="generatePomFileFor${publish}Publication"
-
-            val findByName = project.tasks.findByName(taskName)
-            val findByName1 = project.tasks.findByName(taskName2)
-//            log2(findByName::class.java.canonicalName,project)
-//            log2(findByName::class.java.canonicalName,project)
-        }
-
         project.tasks.withType(org.gradle.api.publish.maven.tasks.GenerateMavenPom::class.java).configureEach {
-            val mapNotNull =
-                listOf("JCH", "pluginMaven", "jchPluginPluginMarkerMaven").map { "generatePomFileFor${it}Publication" }
-                    .mapNotNull { project.tasks.findByName(it) as? GenerateMavenPom? }?.firstOrNull()
             val publishingExtension = project.extensions.findByType(PublishingExtension::class.java)?.publications
             if (it.pom == null) {
                 it.doFirst {
                     val generateMavenPom = it as GenerateMavenPom
                     setMavenPOM(generateMavenPom.pom)
-                    log2("sasa"+generateMavenPom.pom,project)
                     if (signingExtension != null&&!publishingExtension.isNullOrEmpty()) {
                         publishingExtension.forEach {
                             runCatching { signingExtension.sign(it)  }
                         }
                     }
                 }
-                it.doLast {
-
-                }
-//                it.pom=
-//                it.pom= mapNotNull?.pom
-//                it.pom= publishingExtension?.
             }
         }
     }

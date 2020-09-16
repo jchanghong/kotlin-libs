@@ -19,6 +19,9 @@ internal fun setdependencies(project: Project, myExtension: JchPluginExtension) 
     }.toHashSet()
     addtestImplementation("org.springframework.boot:spring-boot-starter-test", "2.3.3.RELEASE", project, allDepens)
     addtestImplementation("org.jetbrains.kotlin:kotlin-test-junit", "1.4.10", project, allDepens)
+    for (springBootDependency in myExtension.springBootDependencies) {
+        addImplementation(JchPluginExtension.springBootDependencies+springBootDependency,"2.3.3.RELEASE",project, allDepens)
+    }
     project.configurations.all {
         it.resolutionStrategy.eachDependency {
             if (it.requested.group == "org.jetbrains.kotlin") {

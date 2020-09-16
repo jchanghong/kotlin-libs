@@ -2,9 +2,14 @@ package com.github.jchanghong
 
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
+import org.gradle.api.artifacts.dsl.RepositoryHandler
 import org.gradle.api.plugins.JavaPluginExtension
+import org.gradle.api.publication.maven.internal.pom.DefaultMavenPom
 import org.gradle.api.publish.PublishingExtension
+import org.gradle.api.publish.maven.MavenPom
 import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.api.publish.maven.internal.publication.DefaultMavenPublication
+import org.gradle.api.publish.maven.tasks.GenerateMavenPom
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.api.tasks.javadoc.Javadoc
 import org.gradle.external.javadoc.StandardJavadocDocletOptions
@@ -62,50 +67,79 @@ internal fun setmavenpublish(project: Project) {
         if (publishingExtension != null) {
             val mavenPublication = publishingExtension.publications.maybeCreate("JCH", MavenPublication::class.java)
             mavenPublication.from(project.components.findByName("java"))
-            mavenPublication.pom.apply {
-                name.set("kotlin-lib")
-                description.set("kotlin java tools")
-                url.set("http://www.example.com/library")
-                licenses {
-
-                    it.license {
-                        it.name.set("The Apache License, Version 2.0")
-                        it.url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
-                    }
-                }
-                developers {
-                    it.developer {
-                        it.email.set("3200601e@qq.com")
-                    }
-                }
-                scm {
-                    it.connection.set("scm:git:https://github.com/jchanghong/utils.git")
-                    it.developerConnection.set("scm:git:git@github.com:jchanghong/utils.git")
-                    it.url.set("git@github.com:jchanghong/utils.git")
-                }
+            mavenPublication.pom {
+                setMavenPOM(it)
             }
-            publishingExtension.repositories.apply {
-                maven {
-                    it.name = "sona"
-                    val releasesRepoUrl = project.uri("https://oss.sonatype.org/service/local/staging/deploy/maven2")
-                    val snapshotsRepoUrl = project.uri("${project.buildDir}/repos/snapshots")
-//            val releasesRepoUrl = uri("$buildDir/repos/releases")
-
-                    it.url = if (project.version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
-                    if (it.url.toString().startsWith("http")) {
-                        it.isAllowInsecureProtocol = true
-                        it.credentials {
-                            it.username = "jchanghong"
-                            it.password = "!b58r5gsHu*0"
-                        }
-                    }
-                }
+            publishingExtension.repositories {
+                setPublishRepositoryHandler(it,project)
             }
             val signingExtension = project.extensions.findByType(SigningExtension::class.java)
             if (signingExtension != null) {
                 signingExtension.sign(mavenPublication)
                 log2("add mavenPublication JCH", project)
             }
+        }
+    }
+    project.pluginManager.withPlugin("com.gradle.plugin-publish"){
+        val signingExtension = project.extensions.findByType(SigningExtension::class.java)
+        project.tasks.withType(org.gradle.api.publish.maven.tasks.GenerateMavenPom::class.java).configureEach {
+            val publishingExtension = project.extensions.findByType(PublishingExtension::class.java)?.publications
+            if (it.pom == null) {
+                it.doFirst {
+                    val generateMavenPom = it as GenerateMavenPom
+                    setMavenPOM(generateMavenPom.pom)
+                    if (signingExtension != null&&!publishingExtension.isNullOrEmpty()) {
+                        publishingExtension.forEach {
+                            runCatching { signingExtension.sign(it)  }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+fun setPublishRepositoryHandler(repositoryHandler: RepositoryHandler?,project: Project) {
+   repositoryHandler?.apply {
+       maven {
+           it.name = "sona"
+           val releasesRepoUrl = project.uri("https://oss.sonatype.org/service/local/staging/deploy/maven2")
+           val snapshotsRepoUrl = project.uri("${project.buildDir}/repos/snapshots")
+//            val releasesRepoUrl = uri("$buildDir/repos/releases")
+
+           it.url = if (project.version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
+           if (it.url.toString().startsWith("http")) {
+               it.isAllowInsecureProtocol = true
+               it.credentials {
+                   it.username = "jchanghong"
+                   it.password = "!b58r5gsHu*0"
+               }
+           }
+       }
+   }
+}
+
+fun setMavenPOM(mavenPom: MavenPom?) {
+    mavenPom?.apply {
+        name.set("kotlin-lib")
+        description.set("kotlin java tools")
+        url.set("http://www.example.com/library")
+        licenses {
+
+            it.license {
+                it.name.set("The Apache License, Version 2.0")
+                it.url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+            }
+        }
+        developers {
+            it.developer {
+                it.email.set("3200601e@qq.com")
+            }
+        }
+        scm {
+            it.connection.set("scm:git:https://github.com/jchanghong/utils.git")
+            it.developerConnection.set("scm:git:git@github.com:jchanghong/utils.git")
+            it.url.set("git@github.com:jchanghong/utils.git")
         }
     }
 }

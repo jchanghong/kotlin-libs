@@ -11,8 +11,14 @@ internal fun log2(log: Any?, project: Project) {
 }
 
 open class JchPluginExtension {
+    companion object{
+        /** org.springframework.boot:spring-boot-starter-*/
+        const val springBootDependencies="org.springframework.boot:spring-boot-starter-"
+    }
     /** 强制设置版本号，key是 group:name,或者group*/
     var mavenVersionMap:MutableMap<String,String>  = mutableMapOf()
+    /** org.springframework.boot:spring-boot-starter-{}*/
+    var springBootDependencies = arrayListOf("web")
     var message = "1Hello from GreetingPlugin"
 }
 

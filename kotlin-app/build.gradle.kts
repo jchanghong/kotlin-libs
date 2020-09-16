@@ -9,10 +9,12 @@ plugins {
     application
     id("com.github.jchanghong.jchtest") apply true
 }
+jch.springBootDependencies.add("web")
+jch.springBootDependencies.add("data-elasticsearch")
 dependencies {
 //        implementation("com.github.jchanghong:kotlin-lib:1.0.1")
-        implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
-    implementation("org.springframework.boot:spring-boot-starter-web")
+//        implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
+//    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation(project(":kotlin-lib"))
 }
 
