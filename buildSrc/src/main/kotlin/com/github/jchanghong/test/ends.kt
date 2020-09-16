@@ -8,6 +8,12 @@ import org.gradle.plugins.signing.SigningExtension
 internal fun end(project: Project, myExtension: JchPluginExtension) {
     project.pluginManager.withPlugin("com.gradle.plugin-publish") {
         val signingExtension = project.extensions.findByType(SigningExtension::class.java)
+        project.tasks.all {
+            if ("JCH" in it.name) {
+                it.enabled=false
+                log2("remove "+it.name,project,myExtension.logInfo)
+            }
+        }
         project.tasks.withType(org.gradle.api.publish.maven.tasks.GenerateMavenPom::class.java).configureEach {
             if (it.pom == null) {
                 it.doFirst {
@@ -25,7 +31,7 @@ internal fun end(project: Project, myExtension: JchPluginExtension) {
                         runCatching {
                             val sign = signingExtension.sign(publishingExtension)
                             sign.forEach {
-                                project.logger.quiet("generate:" + it.name + it.filesToSign.first().absolutePath)
+//                                project.logger.quiet("generate:" + it.name + it.filesToSign.first().absolutePath)
                                 it.generate()
                             }
                             sign

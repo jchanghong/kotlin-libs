@@ -56,9 +56,9 @@ internal fun configurationPlugin(project: Project, myExtension: JchPluginExtensi
 }
 
 internal fun setmavenpublish(project: Project, myExtension: JchPluginExtension) {
-    project.pluginManager.withPlugin("name.remal.maven-publish-nexus-staging") {
-        project.tasks.findByName("releaseNexusRepositories")?.dependsOn("publish")
-    }
+//    project.pluginManager.withPlugin("name.remal.maven-publish-nexus-staging") {
+//        project.tasks.findByName("releaseNexusRepositories")?.dependsOn("publish")
+//    }
     project.pluginManager.withPlugin("maven-publish") {
         val publishingExtension = project.extensions.findByType(PublishingExtension::class.java)
         if (publishingExtension != null) {
