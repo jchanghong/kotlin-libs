@@ -9,6 +9,7 @@ plugins {
     application
     id("com.github.jchanghong.jchtest") apply true
 }
+jch.logInfo=false
 jch.springBootDependencies.add("web")
 jch.springBootDependencies.add("data-elasticsearch")
 dependencies {

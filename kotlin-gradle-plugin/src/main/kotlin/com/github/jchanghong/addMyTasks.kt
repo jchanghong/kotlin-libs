@@ -2,9 +2,9 @@ package com.github.jchanghong
 
 import org.gradle.api.Project
 
-internal fun addMyTasks(project: Project) {
+internal fun addMyTasks(project: Project, myExtension: JchPluginExtension) {
     for (softwareComponent in project.components) {
-        log2(softwareComponent.name,project)
+        log2(softwareComponent.name, project, myExtension.logInfo)
     }
 //    log2("addMyTasks()", project)
     // Add the 'testplugin' extension object

@@ -1,34 +1,44 @@
 package com.github.jchanghong.test
 
-import cn.hutool.core.util.StrUtil
 import org.gradle.api.Project
 
 /** 第一个是group map，第2个是 完整的group:name map*/
-fun versions(map: Map<String,String>): Pair<Map<String, String>, Map<String, String>> {
+fun versions(map: Map<String, String>): Pair<Map<String, String>, Map<String, String>> {
     val groupmap = map.filterKeys { it.indexOf(":") < 0 }
     val groupmap2 = map.filterKeys { it.indexOf(":") > 0 }
     return groupmap to groupmap2
 }
+
 internal fun setdependencies(project: Project, myExtension: JchPluginExtension) {
-    log2("setdependencies()", project)
-    val (gmap,nmap) = versions(myExtension.mavenVersionMap)
+    log2("setdependencies()", project, myExtension.logInfo)
+    val (gmap, nmap) = versions(myExtension.mavenVersionMap)
     val allDepens = project.configurations.filter {
         it.name == "api" || it.name == "implementation" || it.name == "compile" || it.name == "testApi" || it.name == "testImplementation"
     }.flatMap { conf ->
         conf.dependencies.map { "${it.group}:${it.name}" }
     }.toHashSet()
-    addtestImplementation("org.springframework.boot:spring-boot-starter-test", "2.3.3.RELEASE", project, allDepens)
-    addtestImplementation("org.jetbrains.kotlin:kotlin-test-junit", "1.4.10", project, allDepens)
+    addtestImplementation(
+        "org.springframework.boot:spring-boot-starter-test",
+        myExtension.springBootversion,
+        project,
+        allDepens
+    )
+    addtestImplementation("org.jetbrains.kotlin:kotlin-test-junit", myExtension.kotlinVersion, project, allDepens)
     for (springBootDependency in myExtension.springBootDependencies) {
-        addImplementation(JchPluginExtension.springBootDependencies+springBootDependency,"2.3.3.RELEASE",project, allDepens)
+        addImplementation(
+            JchPluginExtension.springBootDependencies + springBootDependency,
+            myExtension.springBootversion,
+            project,
+            allDepens
+        )
     }
     project.configurations.all {
         it.resolutionStrategy.eachDependency {
             if (it.requested.group == "org.jetbrains.kotlin") {
-                it.useVersion("1.4.10")
+                it.useVersion(myExtension.kotlinVersion)
             }
             if (it.requested.group == "com.squareup.okhttp3" && it.requested.name == "okhttp") {
-                it.useVersion("4.9.0")
+                it.useVersion(myExtension.okhttpVersion)
             }
             if (gmap.containsKey(it.requested.group)) {
                 it.useVersion(gmap[it.requested.group] ?: error(""))
