@@ -54,8 +54,10 @@ internal fun configurationPlugin(project: Project) {
 }
 
 internal fun setmavenpublish(project: Project) {
-    project.pluginManager.withPlugin("maven-publish") {
+    project.pluginManager.withPlugin("name.remal.maven-publish-nexus-staging"){
         project.tasks.findByName("releaseNexusRepositories")?.dependsOn("publish")
+    }
+    project.pluginManager.withPlugin("maven-publish") {
         val publishingExtension = project.extensions.findByType(PublishingExtension::class.java)
         if (publishingExtension != null) {
             val mavenPublication = publishingExtension.publications.maybeCreate("JCH", MavenPublication::class.java)
@@ -67,8 +69,8 @@ internal fun setmavenpublish(project: Project) {
                 licenses {
 
                     it.license {
-                        name.set("The Apache License, Version 2.0")
-                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                        it.name.set("The Apache License, Version 2.0")
+                        it.url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
                     }
                 }
                 developers {
@@ -79,7 +81,7 @@ internal fun setmavenpublish(project: Project) {
                 scm {
                     it.connection.set("scm:git:https://github.com/jchanghong/utils.git")
                     it.developerConnection.set("scm:git:git@github.com:jchanghong/utils.git")
-                    url.set("git@github.com:jchanghong/utils.git")
+                    it.url.set("git@github.com:jchanghong/utils.git")
                 }
             }
             publishingExtension.repositories.apply {

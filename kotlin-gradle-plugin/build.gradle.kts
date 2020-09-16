@@ -5,15 +5,16 @@
  * For more details take a look at the Writing Custom Plugins chapter in the Gradle
  * User Manual available at https://docs.gradle.org/6.6.1/userguide/custom_plugins.html
  */
-version="2.0"
+version="0.1"
 plugins {
     // Apply the Java Gradle plugin development plugin to add support for developing Gradle plugins
     id("com.github.jchanghong.jchtest") apply true
     `java-gradle-plugin`
 
     kotlin("jvm")  apply true
-//    `maven-publish`
+    `maven-publish`
     `java-library`
+    id("com.gradle.plugin-publish") version "0.12.0"
 }
 repositories {
     mavenLocal()
@@ -44,11 +45,27 @@ dependencies {
     api("name.remal:gradle-plugins:latest.release")
 }
 
+//gradlePlugin {
+//    // Define the plugin
+//    val jch by plugins.creating {
+//        id = "com.github.jchanghong.jch"
+//        version="1.0"
+//        implementationClass = "com.github.jchanghong.JchGradlePlugin"
+//    }
+//}
+pluginBundle {
+    website = "https://github.com/jchanghong/kotlin-lib"
+    vcsUrl = "https://github.com/jchanghong/kotlin-lib.git"
+    tags = listOf("kotlin", "test", "compatibility")
+}
 gradlePlugin {
-    // Define the plugin
-    val jch by plugins.creating {
-        id = "com.github.jchanghong.jch"
-        version="1.0"
-        implementationClass = "com.github.jchanghong.JchGradlePlugin"
+    plugins {
+        create("jchPlugin") {
+            id = "com.github.jchanghong.jch"
+//            version="1.0"
+            displayName = "A plugin that helps you use kotlin "
+            description = "A plugin that helps you use kotlin "
+            implementationClass = "com.github.jchanghong.JchGradlePlugin"
+        }
     }
 }

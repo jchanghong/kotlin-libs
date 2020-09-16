@@ -3,6 +3,9 @@ package com.github.jchanghong
 import org.gradle.api.Project
 
 internal fun addMyTasks(project: Project) {
+    for (softwareComponent in project.components) {
+        log2(softwareComponent.name,project)
+    }
 //    log2("addMyTasks()", project)
     // Add the 'testplugin' extension object
 
